@@ -94,14 +94,13 @@ class Floor:
 		self.childs.append(floor)
 class FloorSelector:
 	def __init__(self):
-		self.selected = []
-		for i in range(19):
-			self.selected.append(False)
+		self.selected = set()
+
 	def getRandom(self):
 		rolled = roll3D6()
-		while(self.selected[rolled]):
+		while rolled in self.selected:
 			rolled = roll3D6()
-		self.selected[rolled] = True
+		self.selected.add(rolled)
 		return rolled 
 
 def rollD6():
@@ -134,31 +133,16 @@ def printArchitectureMakeConnection(floor, netmap):
 
 
 def printArchitecture(floors):
-	depth = 0
-	for floor in floors:
-		if depth < floor.level:
-			depth = floor.level
+	depth = max(floor.level for floor in floors)
 
 	print("\nMap:")
-	#findOffsets
-	writePrintOffset(floors[0],0)
+	# findOffsets
+	writePrintOffset(floors[0], 0)
 
-	#fill grid
-	width = 0
-	for floor in floors:
-		if width <= floor.offset:
-			width = floor.offset +1
-	netmap = []
-	for i in range(0,depth):
-		row1 = []
-		row2=[]
-		for j in range(0,width):
-			row1.append(0)
-			row2.append(0)
-			row1.append(0)
-			row2.append(0)
-		netmap.append(row1)
-		netmap.append(row2)
+	# fill grid
+	width = max(floor.offset for floor in floors) + 1
+	netmap = [[0] * width * 2 for row in range(depth * 2)]
+
 	# -1 right, -2 down
 	printArchitectureMakeConnection(floors[0],netmap)
 
@@ -226,9 +210,8 @@ def getArchitecture():
 	#other levels
 	level = 1
 	lastfloor = floor
-	for i in range(2,depth+1):
-		level +=1
-		floor = Floor(level)
+	for i in range(2, depth + 1):
+		floor = Floor(i)
 		lastfloor.addChild(floor)
 		all_floors.append(floor)
 		lastfloor = floor
