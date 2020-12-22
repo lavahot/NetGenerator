@@ -2,84 +2,84 @@ import random
 from pynput import keyboard
 
 INTERIOR_LOBBY = [
-	"File DV6",
-	"Password DV6",
-	"Password DV8",
-	"Skunk",
-	"Wisp",
-	"Killer",
+	("File DV6", "📂6"),
+	("Password DV6", "🔑6"),
+	("Password DV8", "🔑8"),
+	("Skunk", "🦨"),
+	("Wisp", "👻"),
+	("Killer", "🔪"),
 ]
 INTERIOR_BASIC = [
-	"Hellhound",
-	"Sabertooth",
-	"Raven x2",
-	"Hellhound",
-	"Wisp",
-	"Raven",
-	"Password DV6",
-	"File DV6",
-	"Control Node DV6",
-	"Password DV6",
-	"Skunk",
-	"Asp",
-	"Scorpion",
-	"Killer, Skunk",
-	"Wisp x3",
-	"Liche",
+	("Hellhound", "🐺"),
+	("Sabertooth", "😾"),
+	("Raven x2", "🐧🐧"),
+	("Hellhound", "🐺"),
+	("Wisp", "👻"),
+	("Raven", "🐧"),
+	("Password DV6", "🔑6"),
+	("File DV6", "📂6"),
+	("Control Node DV6", "🎛6"),
+	("Password DV6", "🔑6"),
+	("Skunk", "🦨"),
+	("Asp", "🐍"),
+	("Scorpion", "🦂"),
+	("Killer, Skunk", "🔪🦨"),
+	("Wisp x3", "👻👻👻"),
+	("Liche", "💀"),
 ]
-INTERIOR_STANDART = [
-	"Hellhound x2",
-	"Hellhound, Killer",
-	"Skunk x2",
-	"Sabertooth",
-	"Scorpion",
-	"Hellhound",
-	"Password DV8",
-	"File DV8",
-	"Control Node DV8",
-	"Password DV8",
-	"Asp",
-	"Killer",
-	"Liche",
-	"Asp",
-	"Raven x3",
-	"Liche, Raven",
+INTERIOR_STANDARD = [
+	("Hellhound x2", "🐺🐺"),
+	("Hellhound, Killer", "🐺🔪"),
+	("Skunk x2", "🦨🦨"),
+	("Sabertooth", "😾"),
+	("Scorpion", "🦂"),
+	("Hellhound", "🐺"),
+	("Password DV8", "🔑8"),
+	("File DV8", "📂8"),
+	("Control Node DV8", "🎛8"),
+	("Password DV8", "🔑8"),
+	("Asp", "🐍"),
+	("Killer", "🔪"),
+	("Liche", "💀"),
+	("Asp", "🐍"),
+	("Raven x3", "🐧🐧🐧"),
+	("Liche, Raven", "💀🐧"),
 ]
 INTERIOR_UNCOMMON = [
-	"Kraken",
-	"Hellhound, Scorpion",
-	"Hellhound, Killer",
-	"Raven x2",
-	"Sabertooth",
-	"Hellhound",
-	"Password DV10",
-	"File DV10",
-	"Control Node DV10",
-	"Password DV10",
-	"Killer",
-	"Liche",
-	"Dragon",
-	"Asp, Raven",
-	"Dragon, Wisp",
-	"Giant",
+	("Kraken", "🐙"),
+	("Hellhound, Scorpion", "🐺🦂"),
+	("Hellhound, Killer", "🐺🔪"),
+	("Raven x2", "🐧🐧"),
+	("Sabertooth", "😾"),
+	("Hellhound", "🐺"),
+	("Password DV10", "🔑10"),
+	("File DV10", "📂10"),
+	("Control Node DV10", "🎛10"),
+	("Password DV10", "🔑10"),
+	("Killer", "🔪"),
+	("Liche", "💀"),
+	("Dragon", "🐲"),
+	("Asp, Raven", "🐍🐧"),
+	("Dragon, Wisp", "🐲👻"),
+	("Giant", "👹"),
 ]
 INTERIOR_ADVANCED = [
-	"Hellhound x3",
-	"Asp x2",
-	"Hellhound, Liche",
-	"Wisp x3",
-	"Hellhound, Sabertooth",
-	"Kraken",
-	"Password DV12",
-	"File DV12",
-	"Control Node DV12",
-	"Password DV12",
-	"Giant",
-	"Dragon",
-	"Killer, Scorpion",
-	"Kraken",
-	"Raven, Wisp, Hellhound",
-	"Dragon x2",
+	("Hellhound x3", "🐺🐺🐺"),
+	("Asp x2", "🐍🐍"),
+	("Hellhound, Liche", "🐺💀"),
+	("Wisp x3", "👻👻👻"),
+	("Hellhound, Sabertooth", "🐺😾"),
+	("Kraken", "🐙"),
+	("Password DV12", "🔑12"),
+	("File DV12", "📂12"),
+	("Control Node DV12", "🎛12"),
+	("Password DV12", "🔑12"),
+	("Giant", "👹"),
+	("Dragon", "🐲"),
+	("Killer, Scorpion", "🔪🦂"),
+	("Kraken", "🐙"),
+	("Raven, Wisp, Hellhound", "🐧👻🐺"),
+	("Dragon x2", "🐲🐲"),
 ]
 
 class Floor:
@@ -166,10 +166,7 @@ def printArchitecture(floors):
 		strRow = ""
 		for hit in row:
 			if hit > 0:
-				if hit > 9:
-					strRow += str(hit)
-				else:
-					strRow += "0"+str(hit)
+				strRow += str(getOccupant(floors[hit-1], difficulty if hit > 2 else 0)[1])
 			if hit == 0:
 				strRow += "  "
 			if hit == -1:
@@ -294,45 +291,58 @@ def populateFloors(floors):
 	populateLevel(floorRandom,floor.childs)
 
 
-def getDificulty():
-	print("Please select dificulty")
-	print("1-Basic Difficulty    | DV6  | Normal interface level 2 | Deadly bottom inteface level: N/A")
-	print("2-Standart Difficulty | DV8  | Normal interface level 4 | Deadly bottom inteface level: 2")
-	print("3-Uncommon Difficulty | DV10 | Normal interface level 6 | Deadly bottom inteface level: 4")
-	print("4-Advanced Difficulty | DV12 | Normal interface level 8 | Deadly bottom inteface level: 6")
+def getDifficulty():
+	print("Please select difficulty")
+	print(
+		"1-Basic Difficulty    | DV6  | Normal interface level 2 | Deadly bottom interface level: N/A"
+	)
+	print(
+		"2-Standard Difficulty | DV8  | Normal interface level 4 | Deadly bottom interface level: 2"
+	)
+	print(
+		"3-Uncommon Difficulty | DV10 | Normal interface level 6 | Deadly bottom interface level: 4"
+	)
+	print(
+		"4-Advanced Difficulty | DV12 | Normal interface level 8 | Deadly bottom interface level: 6"
+	)
 	try:
-		dificulty = int(input("Dificulty:"))
-	except: 
+		difficulty = int(input("Difficulty:"))
+		if not (difficulty >= 1 and difficulty <= 4):
+			raise ValueError
+	except ValueError:
 		print("\n!!ERROR!!")
-		print("Provide numbers between 1 and 4")
+		print("Provide a number between 1 and 4")
 		print("!!ERROR!!\n")
-		return getDificulty()
-	if not (dificulty >=1 and dificulty <= 4):
-		print("\n!!ERROR!!")
-		print("Provide numbers between 1 and 4")
-		print("!!ERROR!!\n")
-		return getDificulty()
-	return dificulty
+		return getDifficulty()
+	return difficulty
 
-def printLegendRecursive(floor,difficulty):
-	if difficulty == 1:
-		occupancy = INTERIOR_BASIC[floor.occupancy-3]
-	elif difficulty == 2:
-		occupancy = INTERIOR_STANDART[floor.occupancy-3]
-	elif difficulty == 3:
-		occupancy = INTERIOR_UNCOMMON[floor.occupancy-3]
-	elif difficulty == 4:
-		occupancy = INTERIOR_ADVANCED[floor.occupancy-3]
-	print (f"{floor.id}: {occupancy}")
+def getOccupantsFromDifficulty(difficulty):
+	difficultyMap = {
+		0: INTERIOR_LOBBY,
+		1: INTERIOR_BASIC,
+		2: INTERIOR_STANDARD,
+		3: INTERIOR_UNCOMMON,
+		4: INTERIOR_ADVANCED,
+	}
+	return difficultyMap[difficulty]
+
+def getOccupant(floor, difficulty):
+	occupant = getOccupantsFromDifficulty(difficulty)[floor.occupancy - (3 if difficulty else 1)]
+	return occupant
+
+def printLegendRecursive(floor, difficulty):
+	occupant = getOccupant(floor, difficulty)
+	print(f"{occupant[1]}: {occupant[0]}")
 	for child in floor.childs:
 		printLegendRecursive(child,difficulty)
 
 def printLegend(floors, difficulty):
-	print ("Legend:")
+	print("Legend:")
+	occupancy = INTERIOR_LOBBY
 	floor = floors[0]	
-	print (f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}")
+	print(f"{occupancy[floor.occupancy-1][1]}: {occupancy[floor.occupancy-1][0]}")
 	floor = floor.childs[0]	
-	print (f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}")
+	print(f"{occupancy[floor.occupancy-1][1]}: {occupancy[floor.occupancy-1][0]}")
 	for child in floor.childs:
 		printLegendRecursive(child,difficulty)
 
@@ -353,7 +363,7 @@ def on_press(key):
 
 exitApp = False
 while not exitApp:
-	difficulty = getDificulty()
+	difficulty = getDifficulty()
 	all_floors = getArchitecture()
 	setIDs(all_floors)
 	populateFloors(all_floors)
